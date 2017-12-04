@@ -1,0 +1,25 @@
+-- First part of the header, information about the file (14 bytes)
+Type: BM
+Size: 33906656
+Reserved 1: 0
+Reserved 2: 0
+Image start after Offset: 54
+-- Second part of the header, DIB header, bitmap information header (varying size)
+The size of this DIB Header Size: 40
+Width: 4830
+Height: 3510
+Colour Planes: 1
+Bits per Pixel: 16
+Compression Method: 0
+Raw Image Size: 33906602
+Horizontal Resolution: 2834
+Vertical Resolution: 2834
+Number of Colours: 0
+Important Colours: 0
+Nb of different colors: 32
+(3510, 4830, 3)
+Coordinates (x,y) of the red pixel: (669,1306)
+Coordinates (x,y) of the green pixel: (4426,2108)
+Coordinates (x,y) of the green pixel: (4426,2108)
+Coordinates (x,y) of the red pixel: (669,1306)
+Nb of different colors: 32

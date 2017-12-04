@@ -12,7 +12,7 @@ Created on Thu Nov 23 17:37:59 2017
 # to H (unsigned short, 2 bytes), I (unsigned int, 4 bytes)
 import struct
 
-input_filename="/home/cbothore/Bureau/population-density-map.bmp"
+input_filename="population-density-map.bmp"
 
 bmp = open(input_filename, 'rb') # open a binary file
 print('-- First part of the header, information about the file (14 bytes)')
@@ -55,6 +55,7 @@ bmp.close()
 # http://pillow.readthedocs.io/en/latest/
 from PIL import Image
 import numpy as np
+import networkx as nx
 im = Image.open(input_filename)
 
 # This modules gives useful informations
@@ -70,10 +71,10 @@ def hexencode(rgb):
     b=rgb[2]
     return '#%02x%02x%02x' % (r,g,b)
 
-for idx, c in enumerate(colors):
-    plt.bar(idx, c[0], color=hexencode(c[1]))
+#for idx, c in enumerate(colors):
+#    plt.bar(idx, c[0], color=hexencode(c[1]))
 
-plt.show()
+#plt.show()
 # We have 32 different colors in this image
 # We can see that we have "only" 91189 black pixels able to stop zombies 
 # but we have a large majority of dark ones slowing their progression
@@ -98,19 +99,18 @@ p[3,59][0]
 # First method
 # Here is a double loop (careful, O(n²) complexity) to parse the pixels from
 # (0,0) top-left and (heigth-1, width-1) is bottom-right
-for y in range(heigth):
-    for x in range(width):
+#    for x in range(width):
         # p[y,x] is the coord (x,y), x the colum, and y the line
         # As an exemple, we search for the green and red pixels
         # p[y,x] is an array with 3 values
         # We test if there is a complete match between the 3 values 
         # from both arrays p[y,x] and np.array([0,255,0])
         # to detect green pixels
-        if (p[y,x] == np.array([0,255,0])).all():
-            print("Coordinates (x,y) of the green pixel: (%s,%s)" % (str(x),str(y)))
+        #if (p[y,x] == np.array([0,255,0])).all():
+          #  print("Coordinates (x,y) of the green pixel: (%s,%s)" % (str(x),str(y)))
             # Coordinates (x,y) of the green pixel: (4426,2108)
-        if (p[y,x] == np.array([255,0,0])).all():
-            print("Coordinates (x,y) of the red pixel: (%s,%s)" % (str(x),str(y)))
+        #if (p[y,x] == np.array([255,0,0])).all():
+            #print("Coordinates (x,y) of the red pixel: (%s,%s)" % (str(x),str(y)))
             # Coordinates (x,y) of the red pixel: (669,1306)
 
 # Here is a more efficient method to get the location of the green and red pixels
@@ -126,22 +126,48 @@ print("Coordinates (x,y) of the red pixel: (%d,%d)" % (z[0][1],z[0][0]))
 # we could convert our RGB image into greyscale image to manipulate
 # only 1 value for the color and deduce more easily the density of
 # population
+
+
 grayim = im.convert("L")
-grayim.show()
+
+#grayim.show() #Show gray img
 colors = grayim.getcolors(width*heigth)
 print('Nb of different colors: %d' % len(colors))
 # With the image im, let's generate a numpy array to manipulate pixels
 p = np.array(grayim) 
 # plot the histogram. We still have a lot of dark colors. Just to check ;-)
-plt.hist(p.ravel())
+#plt.hist(p.ravel())
+
+#plot point
+plt.imshow(p)
+plt.plot(4426,2108,'r*')
+plt.plot(669,1306,'r*')
+plt.axis('off')
 
 # from gray colors to density
-density = p/255.0
+
 # plot the histogram. We still have a lot of dark colors. Just to check ;-)
+#plt.hist(density.ravel())
+
+plt.show()
+density = p/255.0
+a=np.amin(density)
+print(a)
+
 plt.hist(density.ravel())
+plt.show()
+
+#networkx graph
+#for y in range(heigth):
+#    for x in range(width):
+ #   	if density[x,y]:
+
+#G = nx.Graph([('A','B'),('C','D'),('B','C'),('D','E')])
+#path = nx.shortest_path(G, 'A', 'E')
 
 # We can use the gray 2D array density to create our graph
 # Gray colors density[y,x] range now from 0 (black) to 1 (white)
 # density[0,0] is top-left pixel density
 # and density[heigth-1,width-1] is bottom-right pixel
-
+#for g in p:
+#	print(p)
