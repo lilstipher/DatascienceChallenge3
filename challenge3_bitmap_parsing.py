@@ -137,31 +137,49 @@ print('Nb of different colors: %d' % len(colors))
 p = np.array(grayim) 
 # plot the histogram. We still have a lot of dark colors. Just to check ;-)
 #plt.hist(p.ravel())
-
+density = p/255.0
 #plot point
-plt.imshow(p)
+plt.imshow(density)
 plt.plot(4426,2108,'r*')
 plt.plot(669,1306,'r*')
 plt.axis('off')
+plt.show()
 
 # from gray colors to density
 
 # plot the histogram. We still have a lot of dark colors. Just to check ;-)
 #plt.hist(density.ravel())
 
-plt.show()
 density = p/255.0
 a=np.amin(density)
-print(a)
 
-plt.hist(density.ravel())
-plt.show()
+
+#plt.hist(density.ravel())
+#plt.show()
+#print(p)
+
 
 #networkx graph
-#for y in range(heigth):
-#    for x in range(width):
- #   	if density[x,y]:
 
+
+
+def imageToAdjacency(heigth,width):
+    V = heigth*width
+    adj_matrix = []
+ # vertex numbering starts from 0
+    for i in range(V):
+    	temp = []
+    	for j in range(V):
+            temp.append(0)
+            adj_matrix.append(temp)
+ # print the adjacency matrix
+    return adj_matrix
+#print(imageToAdjacency(100,100))
+#from sklearn.feature_extraction import image
+#A=image.img_to_graph(p)
+#G=nx.from_numpy_matrix(A)
+#print(p)
+#http://love-python.blogspot.fr/2008/04/adjacency-matrix-graph-in-python.html
 #G = nx.Graph([('A','B'),('C','D'),('B','C'),('D','E')])
 #path = nx.shortest_path(G, 'A', 'E')
 
@@ -171,3 +189,42 @@ plt.show()
 # and density[heigth-1,width-1] is bottom-right pixel
 #for g in p:
 #	print(p)
+#for pixelcoordinate, pixeldensity in np.ndenumerate(p):
+    #    x, y= pixelcoordinate
+      #  density= p[x, y]
+        #print(density)
+
+#for y in range(heigth):
+    #for x in range(width):
+    #	densityp= density[y, x]
+    #	if (densityp < 0.2 ):
+    	#	density[y,x]=0
+
+from skimage.graph import route_through_array
+new=1./density
+a=route_through_array(new, [1306,669],[2108,4426],  fully_connected=True,geometric=True)
+rgbim= np.array(im) 
+
+for pixel in a[0]:
+	#print(pixel[0])
+	plt.plot(pixel[1], pixel[0],"b*")
+plt.imshow(rgbim)
+plt.plot(4426,2108,'r*')
+plt.plot(669,1306,'r*')
+plt.axis('off')
+plt.show()
+
+g = nx.Graph()
+
+def allpixeliter(image):
+	allpixels={}
+	for pixelcoordinate, pixeldensity in np.ndenumerate(image):
+		allpixels[pixelcoordinate]=pixeldensity
+	return allpixels
+
+
+
+def turnIntograph(image):
+    for pixelcoordinate, pixeldensity in np.ndenumerate(image):
+        x, y, _ = pixelcoordinate
+        density= image[x, y]
