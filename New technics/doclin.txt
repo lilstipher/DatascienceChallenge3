@@ -1,0 +1,2 @@
+raster http://desktop.arcgis.com/fr/arcmap/10.3/manage-data/raster-and-images/what-is-raster-data.htm
+image python http://dept-info.labri.fr/~namyst/ens/lycee/TD1.html

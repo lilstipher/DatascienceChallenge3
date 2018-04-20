@@ -201,30 +201,35 @@ def imageToAdjacency(heigth,width):
     	#	density[y,x]=0
 
 from skimage.graph import route_through_array
-new=1./density
-a=route_through_array(new, [1306,669],[2108,4426],  fully_connected=True,geometric=True)
-rgbim= np.array(im) 
 
-for pixel in a[0]:
-	#print(pixel[0])
-	plt.plot(pixel[1], pixel[0],"b*")
-plt.imshow(rgbim)
-plt.plot(4426,2108,'r*')
-plt.plot(669,1306,'r*')
-plt.axis('off')
-plt.show()
+def zombies_walk(arrayofweight,startpoint,endpoint):
+	arrayofweight=1./(arrayofweight) #because we want max of weight
+	zombies_route=route_through_array(arrayofweight, startpoint,endpoint,fully_connected=True,geometric=True)
+	#  
+	""" we use skimage.graph.MCP class
 
-g = nx.Graph()
+	A class for finding the minimum weighted path through a given n-d weight array. (that's why
+ 	we normalize arrayofweight=1./arrayofweight to have most weighted path)
+	it returns a List of n-d index tuples defining the path from start to end and the sum of weight
+	see more on http://scikit-image.org/docs/dev/api/skimage.graph.html#skimage.graph.route_through_array
+	."""
+	return zombies_route #return list of pixel route
+
+def draw_walk(imageFile,zombiesWalkList,rgbcolor):
+	img= Image.open(imageFile)
+	pixelArray = img.load() #create pixel Map
+	for i in zombiesWalkList[0]:
+		pixelArray[i[1],i[0]] = rgbcolor # change pixel color
+	img.show()
+
+a=zombies_walk(density,[1306,669],[2108,4426])
+	
+draw_walk("population-density-map.bmp",a,(255,0,0,255))
+
+
 
 def allpixeliter(image):
 	allpixels={}
 	for pixelcoordinate, pixeldensity in np.ndenumerate(image):
 		allpixels[pixelcoordinate]=pixeldensity
 	return allpixels
-
-
-
-def turnIntograph(image):
-    for pixelcoordinate, pixeldensity in np.ndenumerate(image):
-        x, y, _ = pixelcoordinate
-        density= image[x, y]
